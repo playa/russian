@@ -117,6 +117,12 @@ describe Russian, "loading locales" do
     support.array.words_connector
     support.array.two_words_connector
     support.array.last_word_connector
+
+    helpers.submit.create
+    helpers.submit.update
+    helpers.submit.submit
+
+    helpers.select.prompt
   ).each do |key| 
     it "should define '#{key}' in activesupport translations" do
       lookup(key).should_not be_nil
