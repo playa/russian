@@ -16,15 +16,14 @@ end
 require 'backend/advanced'
 
 # Rails hacks
-require 'active_record_ext/custom_error_message' if defined?(ActiveRecord)
 if defined?(ActionView::Helpers)
-  require 'action_view_ext/helpers/date_helper' 
+  require 'action_view_ext/helpers/date_helper'
 end
 require 'active_support_ext/parameterize' if defined?(ActiveSupport::Inflector)
 
 module Russian
   extend self
-  
+
   module VERSION
     MAJOR = 0
     MINOR = 2
@@ -32,7 +31,7 @@ module Russian
 
     STRING = [MAJOR, MINOR, TINY].join('.')
   end
-  
+
   # Russian locale
   LOCALE = :'ru'
 
@@ -40,14 +39,14 @@ module Russian
   def locale
     LOCALE
   end
-  
+
   # Returns custom backend class for usage with Russian library
-  # 
+  #
   # See I18n::Backend
   def i18n_backend_class
     I18n::Backend::Advanced
   end
-  
+
   # Init Russian i18n: set custom backend, set default locale to Russian locale, load all translations
   # shipped with library.
   def init_i18n
@@ -59,20 +58,20 @@ module Russian
   # See I18n::translate
   def translate(key, options = {})
     I18n.translate(key, options.merge({ :locale => LOCALE }))
-  end        
+  end
   alias :t :translate
-  
+
   # See I18n::localize
   def localize(object, options = {})
     I18n.localize(object, options.merge({ :locale => LOCALE }))
   end
   alias :l :localize
-  
+
   # strftime() proxy with Russian localization
   def strftime(object, format = :default)
     localize(object, { :format => format })
   end
-  
+
   # Simple pluralization proxy
   #
   # Usage: 
@@ -96,13 +95,13 @@ module Russian
     Russian::Transliteration.transliterate(str)
   end
   alias :translit :transliterate
-  
+
   protected
     # Returns all locale files shipped with library
     def locale_files
       Dir[File.join(File.dirname(__FILE__), "russian", "locale", "**/*")]
     end
-    
+
     # Converts an array of pluralization variants to a Hash that can be used
     # with I18n pluralization.
     def pluralization_variants_to_hash(*variants)

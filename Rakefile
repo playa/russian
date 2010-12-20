@@ -1,55 +1,44 @@
 require 'rubygems'
-require 'rake/gempackagetask'
-require 'spec/rake/spectask'
-require 'rubygems/specification'
-require 'date'
-
-GEM = "russian"
-GEM_VERSION = "0.2.7"
-AUTHOR = "Yaroslav Markin"
-EMAIL = "yaroslav@markin.net"
-HOMEPAGE = "http://github.com/yaroslav/russian/"
-SUMMARY = "Russian language support for Ruby and Rails"
-
-spec = Gem::Specification.new do |s|
-  s.name = GEM
-  s.version = GEM_VERSION
-  s.platform = Gem::Platform::RUBY
-  s.has_rdoc = true
-  s.extra_rdoc_files = ["README.textile", "LICENSE", "CHANGELOG", "TODO"]
-  s.summary = SUMMARY
-  s.description = s.summary
-  s.author = AUTHOR
-  s.email = EMAIL
-  s.homepage = HOMEPAGE
-  
-  # Uncomment this to add a dependency
-  # s.add_dependency "foo"
-  
-  s.require_path = 'lib'
-  s.autorequire = GEM
-  s.files = %w(LICENSE README.textile Rakefile CHANGELOG TODO init.rb) + Dir.glob("{lib,spec}/**/*")
+require 'bundler'
+begin
+  Bundler.setup(:default, :development)
+rescue Bundler::BundlerError => e
+  $stderr.puts e.message
+  $stderr.puts "Run `bundle install` to install missing gems"
+  exit e.status_code
 end
+require 'rake'
 
-Rake::GemPackageTask.new(spec) do |pkg|
-  pkg.gem_spec = spec
+require 'jeweler'
+Jeweler::Tasks.new do |gem|
+  # gem is a Gem::Specification... see http://docs.rubygems.org/read/chapter/20 for more options
+  gem.name = "russian"
+  gem.homepage = "http://github.com/yaroslav/russian/"
+  gem.license = "MIT"
+  gem.summary = "Russian language support for Ruby and Rails"
+  gem.description = "Russian language support for Ruby and Rails"
+  gem.email = "yaroslav@markin.net"
+  gem.authors = ["Yaroslav Markin"]
+  # Include your dependencies below. Runtime dependencies are required when using your gem,
+  # and development dependencies are only needed for development (ie running rake tasks, tests, etc)
+  #  gem.add_runtime_dependency 'jabber4r', '> 0.1'
+  #  gem.add_development_dependency 'rspec', '> 1.2.3'
 end
+Jeweler::RubygemsDotOrgTasks.new
+
+require 'rspec/core'
+require 'rspec/core/rake_task'
+
+RSpec::Core::RakeTask.new(:spec)
 
 task :default => :spec
-desc "Run specs"
-Spec::Rake::SpecTask.new do |t|
-  t.spec_files = FileList['spec/**/*_spec.rb']
-  t.spec_opts = %w(-fs --color)
-end
 
-desc "install the gem locally"
-task :install => [:package] do
-  sh %{sudo gem install pkg/#{GEM}-#{GEM_VERSION}}
-end
+require 'rake/rdoctask'
+Rake::RDocTask.new do |rdoc|
+  version = File.exist?('VERSION') ? File.read('VERSION') : ""
 
-desc "create a gemspec file"
-task :make_spec do
-  File.open("#{GEM}.gemspec", "w") do |file|
-    file.puts spec.to_ruby
-  end
+  rdoc.rdoc_dir = 'rdoc'
+  rdoc.title = "russian #{version}"
+  rdoc.rdoc_files.include('README*')
+  rdoc.rdoc_files.include('lib/**/*.rb')
 end
